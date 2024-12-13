@@ -4,11 +4,8 @@ CREATE TABLE "users" (
     name VARCHAR(30) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
-    phone VARCHAR(15)
+    phone VARCHAR(15) UNIQUE NOT NULL,
 );
-
-INSERT INTO "users"(name, email, password, phone) VALUES ('Joao', 'jotamail@gmail.com', '12345678', '+351912345678');
-INSERT INTO "users"(name, email, password, phone) VALUES ('Andre', 'Andy@gmail.com', '12345678', '+351912345679');
 
 CREATE TABLE "teams" (
     id SERIAL PRIMARY KEY,

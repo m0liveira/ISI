@@ -23,7 +23,8 @@ namespace futFind.Models
         [MaxLength(50)]
         public string password { get; set; } = null!;
 
+        [Required]
         [MaxLength(15)]
-        public string? phone { get; set; }
+        public string phone { get; set; } = null!;
     }
 }
