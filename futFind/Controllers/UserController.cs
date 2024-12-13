@@ -17,6 +17,18 @@ namespace futFind.Controllers
             _context = context;
         }
 
- 
+        private bool UserExists(int id)
+        {
+            return _context.users.Any(res => res.id == id);
+        }
+
+        // GET: /api/Users/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUser(int id)
+        {
+            if (!UserExists(id)) { return Ok(NotFound()); }
+
+            return Ok(await _context.users.FindAsync(id));
+        }
     }
 }
