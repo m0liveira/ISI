@@ -1,10 +1,10 @@
--- Criação do esquema do banco de dados
+-- Criação do esquema da base de dados
 CREATE TABLE "users" (
     id SERIAL PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(50) NOT NULL,
-    phone VARCHAR(15) UNIQUE NOT NULL,
+    phone VARCHAR(15) UNIQUE NOT NULL
 );
 
 CREATE TABLE "teams" (

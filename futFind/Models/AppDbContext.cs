@@ -9,7 +9,8 @@ namespace futFind.Models
         {
         }
 
-        // Define as tabelas que serão mapeadas
+        // Definir tabelas
         public DbSet<Users> users { get; set; }
+        public DbSet<Teams> teams { get; set; }
     }
 }

@@ -3242,28 +3242,31 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Mateus Oliveira\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\mateu\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
+      "projectUniqueName": "C:\\Users\\mateu\\OneDrive\\Ambiente de Trabalho\\ISI\\futFind\\futFind.csproj",
       "projectName": "futFind",
-      "projectPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
-      "packagesPath": "C:\\Users\\Mateus Oliveira\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\obj\\",
+      "projectPath": "C:\\Users\\mateu\\OneDrive\\Ambiente de Trabalho\\ISI\\futFind\\futFind.csproj",
+      "packagesPath": "C:\\Users\\mateu\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\mateu\\OneDrive\\Ambiente de Trabalho\\ISI\\futFind\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Mateus Oliveira\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\mateu\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
