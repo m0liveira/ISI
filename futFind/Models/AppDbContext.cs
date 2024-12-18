@@ -12,5 +12,6 @@ namespace futFind.Models
         // Definir tabelas
         public DbSet<Users> users { get; set; }
         public DbSet<Teams> teams { get; set; }
+        public DbSet<Members> members { get; set; }
     }
 }

@@ -19,11 +19,11 @@ namespace futFind.Controllers
             _context = context;
         }
 
-        // GET: /api/Teams
+        // GET: /api/Team
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Teams>>> GetTeams() { return Ok(await _context.teams.ToListAsync()); }
 
-        // GET: /api/Teams/code/{invite_code}
+        // GET: /api/Team/code/{invite_code}
         [HttpGet("code/{invite_code}")]
         public async Task<ActionResult<Teams>> GetTeamByCode(string invite_code)
         {
@@ -34,7 +34,7 @@ namespace futFind.Controllers
             return Ok(team);
         }
 
-        // GET: /api/Teams/{id}
+        // GET: /api/Team/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Teams>> GetTeamById(int id)
         {
@@ -48,7 +48,7 @@ namespace futFind.Controllers
             return team;
         }
 
-        // POST: /api/Teams
+        // POST: /api/Team
         [HttpPost]
         public async Task<ActionResult<Teams>> CreateTeam(Teams team)
         {
@@ -68,7 +68,7 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetTeamById), new { id = team.id }, team);
         }
 
-        // PUT: /api/Teams/{id}
+        // PUT: /api/Team/{id}
         [HttpPut("{id}")]
         public async Task<ActionResult<Teams>> UpdateTeam(int id, Teams updatedTeam)
         {
