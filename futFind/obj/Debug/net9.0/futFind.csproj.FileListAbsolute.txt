@@ -248,3 +248,4 @@ C:\Users\mateu\OneDrive\Ambiente de Trabalho\ISI\futFind\obj\Debug\net9.0\refint
 C:\Users\mateu\OneDrive\Ambiente de Trabalho\ISI\futFind\obj\Debug\net9.0\futFind.pdb
 C:\Users\mateu\OneDrive\Ambiente de Trabalho\ISI\futFind\obj\Debug\net9.0\futFind.genruntimeconfig.cache
 C:\Users\mateu\OneDrive\Ambiente de Trabalho\ISI\futFind\obj\Debug\net9.0\ref\futFind.dll
+C:\Users\carlo\Desktop\ISI\futFind\obj\Debug\net9.0\futFind.pdb
