@@ -7,13 +7,13 @@ namespace futFind.Models
     [PrimaryKey(nameof(user_id), nameof(match_id))]
     public class Players
     {
-        [ForeignKey("Users")]
         public int user_id { get; set; }
-
-        [ForeignKey("Games")]
         public int match_id { get; set; }
 
+        [ForeignKey("user_id")]
         public Users User { get; set; } = null!;
+
+        [ForeignKey("match_id")]
         public Games Game { get; set; } = null!;
     }
 }

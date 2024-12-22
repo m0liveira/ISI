@@ -38,6 +38,20 @@ namespace futFind.Controllers
             return Ok(await _context.notifications.FindAsync(id));
         }
 
+        // GET: /api/Notifications/Game/{game_id}
+        [HttpGet("Game/{game_id}")]
+        public async Task<ActionResult<IEnumerable<Notifications>>> GetNotificationsByGame(int game_id)
+        {
+            var gameExists = await _context.games.AnyAsync(g => g.id == game_id);
+            if (!gameExists) { return NotFound(new { message = "Game not found." }); }
+
+            var notifications = await _context.notifications.Where(n => n.match_id == game_id).ToListAsync();
+
+            if (!notifications.Any()) { return NotFound(new { message = "No notifications found for the specified game." }); }
+
+            return Ok(notifications);
+        }
+
         // POST: /api/Notifications
         [HttpPost]
         public async Task<ActionResult<Notifications>> CreateNotification(Notifications notification)

@@ -35,6 +35,17 @@ namespace futFind.Controllers
             return Ok(await _context.games.FindAsync(id));
         }
 
+        // GET: /api/Games/{share_code}
+        [HttpGet("/Code/{share_code}")]
+        public async Task<ActionResult<Games>> GetGamebyCode(string share_code)
+        {
+            var game = await _context.games.FirstOrDefaultAsync(res => res.share_code == share_code);
+
+            if (game == null) { return NotFound(new { message = "Game with the provided invite code was not found." }); }
+
+            return Ok(game);
+        }
+
         // POST: /api/Games
         [HttpPost]
         public async Task<ActionResult<Games>> CreateGame(Games game)

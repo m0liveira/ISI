@@ -32,29 +32,66 @@ namespace futFind.Controllers
             return Ok(await _context.players.ToListAsync());
         }
 
-        // GET: /api/Players/{userId}/{matchId}
         [HttpGet("{userId}/{matchId}")]
         public async Task<ActionResult<Players>> GetPlayer(int userId, int matchId)
         {
             if (!PlayerExists(userId, matchId)) { return NotFound(new { message = "Player not found." }); }
 
-            return Ok(await _context.players
-                .FirstOrDefaultAsync(p => p.user_id == userId && p.match_id == matchId));
+            return Ok(await _context.players.FirstOrDefaultAsync(p => p.user_id == userId && p.match_id == matchId));
+        }
+
+        // GET: /api/Players/Game/{game_id}
+        [HttpGet("Game/{game_id}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetGamePlayers(int game_id)
+        {
+            var gameExists = await _context.games.AnyAsync(res => res.id == game_id);
+            if (!gameExists) { return NotFound(new { message = "Game not found." }); }
+
+            var players = await _context.players.Where(res => res.match_id == game_id).Select(res => res.User).ToListAsync();
+
+            if (!players.Any()) { return NotFound(new { message = "No players found in the match." }); }
+
+            return Ok(players);
+        }
+
+        // GET: /api/Players/{user_id}/Games
+        [HttpGet("{user_id}/Games")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetPlayerGames(int user_id)
+        {
+            var userExists = await _context.users.AnyAsync(res => res.id == user_id);
+            if (!userExists) { return NotFound(new { message = "User not found." }); }
+
+            var games = await _context.players.Where(res => res.user_id == user_id).Select(res => res.Game).ToListAsync();
+
+            if (!games.Any()) { return NotFound(new { message = "The player is not in any games." }); }
+
+            return Ok(games);
         }
 
         // POST: /api/Players
         [HttpPost]
         public async Task<ActionResult<Players>> AddPlayer(Players player)
         {
-            if (PlayerExists(player.user_id, player.match_id))
-            {
-                return Conflict(new { message = "Player is already registered for this match." });
-            }
 
-            _context.players.Add(player);
+            var userExists = await _context.users.AnyAsync(u => u.id == player.user_id);
+            if (!userExists) { return NotFound(new { message = "User not found." }); }
+
+            var gameExists = await _context.games.AnyAsync(t => t.id == player.match_id);
+            if (!gameExists) { return NotFound(new { message = "Game not found." }); }
+
+            var playerExists = await _context.players.AnyAsync(cm => cm.user_id == player.user_id && cm.match_id == player.match_id);
+            if (playerExists) { return Conflict(new { message = "User is already a member of the match." }); }
+
+            var newPlayer = new Players
+            {
+                user_id = player.user_id,
+                match_id = player.match_id
+            };
+
+            _context.players.Add(newPlayer);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPlayer), new { userId = player.user_id, matchId = player.match_id }, player);
+            return CreatedAtAction(nameof(GetPlayer), new { userId = newPlayer.user_id, matchId = newPlayer.match_id }, newPlayer);
         }
 
         // DELETE: /api/Players/{userId}/{matchId}
