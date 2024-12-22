@@ -57,10 +57,10 @@ namespace futFind.Controllers
 
             existingGame.host_id = game.host_id;
             existingGame.date = game.date;
-            existingGame.local = game.local;
+            existingGame.address = game.address;
             existingGame.capacity = game.capacity;
             existingGame.price = game.price;
-            existingGame.private = game.private;
+            existingGame.is_private = game.is_private;
             existingGame.share_code = game.share_code;
             existingGame.status = game.status;
 

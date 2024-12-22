@@ -23,14 +23,14 @@ namespace futFind.Models
         public DateTime date { get; set; }
 
         [MaxLength(200)]
-        public string? local { get; set; }
+        public string? address { get; set; }
 
         public int? capacity { get; set; }
 
         [Column(TypeName = "NUMERIC(10,2)")]
         public decimal? price { get; set; }
 
-        public bool private { get; set; } = false;
+        public bool is_private { get; set; } = false;
 
         [MaxLength(15)]
         public string? share_code { get; set; }

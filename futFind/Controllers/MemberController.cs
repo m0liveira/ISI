@@ -30,8 +30,8 @@ namespace futFind.Controllers
             return Ok(clanMember);
         }
 
-        // GET: /api/Member/{clan_id}
-        [HttpGet("{clan_id}")]
+        // GET: /api/Member/clan/{clan_id}
+        [HttpGet("clan/{clan_id}")]
         public async Task<ActionResult<IEnumerable<Users>>> GetMembersOfClan(int clan_id)
         {
             var clanExists = await _context.teams.AnyAsync(res => res.id == clan_id);
@@ -44,23 +44,43 @@ namespace futFind.Controllers
             return Ok(members);
         }
 
-        // POST: /api/Member
-        [HttpPost]
-        public async Task<ActionResult<Members>> AddMemberToClan(Members member)
+        // GET: /api/Member/user/{user_id}
+        [HttpGet("user/{user_id}")]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUserClan(int user_id)
         {
-            var userExists = await _context.users.AnyAsync(res => res.id == member.user_id);
+            var userExists = await _context.users.AnyAsync(res => res.id == user_id);
             if (!userExists) { return NotFound(new { message = "User not found." }); }
 
-            var clanExists = await _context.teams.AnyAsync(res => res.id == member.clan_id);
-            if (!clanExists) { return NotFound(new { message = "Clan not found." }); }
+            var clans = await _context.members.Where(res => res.user_id == user_id).Select(res => res.Team).ToListAsync();
 
-            var memberExists = await _context.members.AnyAsync(res => res.user_id == member.user_id && res.clan_id == member.clan_id);
+            if (!clans.Any()) { return NotFound(new { message = "User is not a member of any clan." }); }
+
+            return Ok(clans);
+        }
+
+        // POST: /api/Member
+        [HttpPost]
+        public async Task<IActionResult> AddMemberToClan(Members member)
+        {
+            var userExists = await _context.users.AnyAsync(u => u.id == member.user_id);
+            if (!userExists) { return NotFound(new { message = "User not found." }); }
+
+            var teamExists = await _context.teams.AnyAsync(t => t.id == member.clan_id);
+            if (!teamExists) { return NotFound(new { message = "Clan not found." }); }
+
+            var memberExists = await _context.members.AnyAsync(cm => cm.user_id == member.user_id && cm.clan_id == member.clan_id);
             if (memberExists) { return Conflict(new { message = "User is already a member of the clan." }); }
 
-            _context.members.Add(member);
+            var newMember = new Members
+            {
+                user_id = member.user_id,
+                clan_id = member.clan_id
+            };
+
+            _context.members.Add(newMember);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetClanMember), new { user_id = member.user_id, clan_id = member.clan_id }, member);
+            return CreatedAtAction(nameof(GetClanMember), new { user_id = newMember.user_id, clan_id = newMember.clan_id }, newMember);
         }
 
         // DELETE: /api/Member/{clan_id}/{user_id}

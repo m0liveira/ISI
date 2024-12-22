@@ -29,10 +29,10 @@ CREATE TABLE "games" (
     id SERIAL PRIMARY KEY,
     host_id INT NOT NULL,
     date TIMESTAMP NOT NULL,
-    local VARCHAR(200),
+    address VARCHAR(200),
     capacity INT,
     price NUMERIC(10, 2),
-    private BOOLEAN DEFAULT FALSE,
+    is_private BOOLEAN DEFAULT FALSE,
     share_code VARCHAR(15),
     status VARCHAR(50) CHECK (status IN ('Scheduled', 'In Progress', 'Completed', 'Canceled')) DEFAULT 'Scheduled',
     CONSTRAINT fk_host FOREIGN KEY (host_id) REFERENCES "users"(id)

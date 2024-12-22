@@ -1,34 +1,33 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\carlo\\Desktop\\ISI\\futFind\\futFind.csproj": {}
+    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj": {}
   },
   "projects": {
-    "C:\\Users\\carlo\\Desktop\\ISI\\futFind\\futFind.csproj": {
+    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\carlo\\Desktop\\ISI\\futFind\\futFind.csproj",
+        "projectUniqueName": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
         "projectName": "futFind",
-        "projectPath": "C:\\Users\\carlo\\Desktop\\ISI\\futFind\\futFind.csproj",
-        "packagesPath": "C:\\Users\\carlo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\carlo\\Desktop\\ISI\\futFind\\obj\\",
+        "projectPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
+        "packagesPath": "C:\\Users\\Mateus Oliveira\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\carlo\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\Mateus Oliveira\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -36,10 +35,17 @@
           "warnAsError": [
             "NU1605"
           ]
-        }
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
         "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
@@ -64,12 +70,26 @@
               "version": "[7.2.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.426\\RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win7-x86": {
-          "#import": []
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
