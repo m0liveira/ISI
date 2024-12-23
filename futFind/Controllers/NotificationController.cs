@@ -6,11 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace futFind.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class NotificationController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -26,6 +28,8 @@ namespace futFind.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Notifications>>> GetNotifications()
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             return Ok(await _context.notifications.ToListAsync());
         }
 
@@ -33,6 +37,8 @@ namespace futFind.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Notifications>> GetNotification(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!NotificationExists(id)) { return NotFound(new { message = "Notification not found." }); }
 
             return Ok(await _context.notifications.FindAsync(id));
@@ -42,6 +48,8 @@ namespace futFind.Controllers
         [HttpGet("Game/{game_id}")]
         public async Task<ActionResult<IEnumerable<Notifications>>> GetNotificationsByGame(int game_id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var gameExists = await _context.games.AnyAsync(g => g.id == game_id);
             if (!gameExists) { return NotFound(new { message = "Game not found." }); }
 
@@ -56,6 +64,8 @@ namespace futFind.Controllers
         [HttpPost]
         public async Task<ActionResult<Notifications>> CreateNotification(Notifications notification)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             _context.notifications.Add(notification);
             await _context.SaveChangesAsync();
 
@@ -66,6 +76,8 @@ namespace futFind.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Notifications>> UpdateNotification(int id, Notifications notification)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!NotificationExists(id)) { return NotFound(new { message = "Notification not found." }); }
 
             var existingNotification = await _context.notifications.FindAsync(id);
@@ -88,6 +100,8 @@ namespace futFind.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteNotification(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!NotificationExists(id)) { return NotFound(new { message = "Notification not found." }); }
 
             var notification = await _context.notifications.FindAsync(id);

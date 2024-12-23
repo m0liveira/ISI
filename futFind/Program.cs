@@ -24,10 +24,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// var jwtKey = builder.Configuration["Jwt:Key"];
-var jwtKey = "jwOd0avQ3SSBoe8zjwOd0avQ3SSBoe8z";
-var jwtIssuer = "IPCAISI2024";
-// var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -40,7 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtIssuer,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey ?? throw new InvalidOperationException("JWT Key is not configured.")))
     };
 
     options.Events = new JwtBearerEvents

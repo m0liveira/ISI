@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace futFind.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MemberController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -23,6 +25,8 @@ namespace futFind.Controllers
         [HttpGet("{user_id}/{clan_id}")]
         public async Task<ActionResult<Members>> GetClanMember(int user_id, int clan_id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var clanMember = await _context.members.FirstOrDefaultAsync(res => res.user_id == user_id && res.clan_id == clan_id);
 
             if (clanMember == null) { return NotFound(); }
@@ -34,6 +38,8 @@ namespace futFind.Controllers
         [HttpGet("clan/{clan_id}")]
         public async Task<ActionResult<IEnumerable<Users>>> GetMembersOfClan(int clan_id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var clanExists = await _context.teams.AnyAsync(res => res.id == clan_id);
             if (!clanExists) { return NotFound(new { message = "Clan not found." }); }
 
@@ -48,6 +54,8 @@ namespace futFind.Controllers
         [HttpGet("user/{user_id}")]
         public async Task<ActionResult<IEnumerable<Users>>> GetUserClan(int user_id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var userExists = await _context.users.AnyAsync(res => res.id == user_id);
             if (!userExists) { return NotFound(new { message = "User not found." }); }
 
@@ -62,6 +70,8 @@ namespace futFind.Controllers
         [HttpPost]
         public async Task<IActionResult> AddMemberToClan(Members member)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var userExists = await _context.users.AnyAsync(u => u.id == member.user_id);
             if (!userExists) { return NotFound(new { message = "User not found." }); }
 
@@ -87,6 +97,8 @@ namespace futFind.Controllers
         [HttpDelete("{clan_id}/{user_id}")]
         public async Task<IActionResult> RemoveUserFromClan(int clan_id, int user_id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var clanMember = await _context.members.FirstOrDefaultAsync(res => res.clan_id == clan_id && res.user_id == user_id);
 
             if (clanMember == null) { return NotFound(new { message = "The user is not a member of the specified clan." }); }

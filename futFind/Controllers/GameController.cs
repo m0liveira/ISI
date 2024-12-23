@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
 
@@ -11,6 +11,7 @@ namespace futFind.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GameController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -24,12 +25,19 @@ namespace futFind.Controllers
 
         // GET: /api/Games
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Games>>> GetGames() { return Ok(await _context.games.ToListAsync()); }
+        public async Task<ActionResult<IEnumerable<Games>>> GetGames()
+        {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+            
+            return Ok(await _context.games.ToListAsync());
+        }
 
         // GET: /api/Games/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Games>> GetGame(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!GameExists(id)) { return NotFound(new { message = "Game not found." }); }
 
             return Ok(await _context.games.FindAsync(id));
@@ -39,6 +47,8 @@ namespace futFind.Controllers
         [HttpGet("/Code/{share_code}")]
         public async Task<ActionResult<Games>> GetGamebyCode(string share_code)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var game = await _context.games.FirstOrDefaultAsync(res => res.share_code == share_code);
 
             if (game == null) { return NotFound(new { message = "Game with the provided invite code was not found." }); }
@@ -50,6 +60,8 @@ namespace futFind.Controllers
         [HttpPost]
         public async Task<ActionResult<Games>> CreateGame(Games game)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             _context.games.Add(game);
             await _context.SaveChangesAsync();
 
@@ -60,6 +72,8 @@ namespace futFind.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Games>> UpdateGame(int id, Games game)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!GameExists(id)) { return NotFound(new { message = "Game not found." }); }
 
             var existingGame = await _context.games.FindAsync(id);
@@ -86,6 +100,8 @@ namespace futFind.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Games>> DeleteGame(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!GameExists(id)) { return NotFound(new { message = "Game not found." }); }
 
             var game = await _context.games.FindAsync(id);

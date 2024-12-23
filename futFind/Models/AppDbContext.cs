@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using futFind.Models;
 
 namespace futFind.Models
 {

@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace futFind.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class TeamController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -21,12 +23,18 @@ namespace futFind.Controllers
 
         // GET: /api/Team
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Teams>>> GetTeams() { return Ok(await _context.teams.ToListAsync()); }
+        public async Task<ActionResult<IEnumerable<Teams>>> GetTeams()
+        {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+            return Ok(await _context.teams.ToListAsync());
+        }
 
         // GET: /api/Team/code/{invite_code}
         [HttpGet("code/{invite_code}")]
         public async Task<ActionResult<Teams>> GetTeamByCode(string invite_code)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var team = await _context.teams.FirstOrDefaultAsync(res => res.invite_code == invite_code);
 
             if (team == null) { return NotFound(new { message = "Team with the provided invite code was not found." }); }
@@ -38,6 +46,8 @@ namespace futFind.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Teams>> GetTeamById(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             var team = await _context.teams.FindAsync(id);
 
             if (team == null)
@@ -52,6 +62,8 @@ namespace futFind.Controllers
         [HttpPost]
         public async Task<ActionResult<Teams>> CreateTeam(Teams team)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             // Check if the team name already exists
             var existingTeam = await _context.teams.FirstOrDefaultAsync(res => res.name == team.name);
 
@@ -72,6 +84,8 @@ namespace futFind.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Teams>> UpdateTeam(int id, Teams updatedTeam)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             // Find the team by ID
             var existingTeam = await _context.teams.FindAsync(id);
 

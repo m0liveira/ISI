@@ -9,6 +9,7 @@ namespace futFind.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -26,7 +27,6 @@ namespace futFind.Controllers
 
         // GET: /api/Users
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -36,7 +36,6 @@ namespace futFind.Controllers
 
         // GET: /api/Users/{id}
         [HttpGet("{id}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> GetUser(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -63,7 +62,6 @@ namespace futFind.Controllers
 
         // PUT: /api/Users/{id}
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> UpdateUser(int id, Users user)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -93,7 +91,6 @@ namespace futFind.Controllers
 
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> DeleteUser(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
