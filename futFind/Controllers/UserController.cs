@@ -9,7 +9,6 @@ namespace futFind.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly AppDbContext _context;
@@ -27,12 +26,21 @@ namespace futFind.Controllers
 
         // GET: /api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsers() { return Ok(await _context.users.ToListAsync()); }
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
+        {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
+            return Ok(await _context.users.ToListAsync());
+        }
 
         // GET: /api/Users/{id}
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> GetUser(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!UserExists(id)) { return BadRequest(NotFound()); }
 
             return Ok(await _context.users.FindAsync(id));
@@ -40,6 +48,7 @@ namespace futFind.Controllers
 
         // POST: /api/Users
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Users>>> CreateUser(Users user)
         {
             if (EmailExists(user.email)) { return Conflict(new { message = "Email is already in use." }); }
@@ -54,8 +63,11 @@ namespace futFind.Controllers
 
         // PUT: /api/Users/{id}
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> UpdateUser(int id, Users user)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!UserExists(id)) { return NotFound(new { message = "User not found." }); }
 
             if (EmailExists(user.email)) { return Conflict(new { message = "Email is already in use." }); }
@@ -81,8 +93,11 @@ namespace futFind.Controllers
 
         // DELETE: api/User/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Users>>> DeleteUser(int id)
         {
+            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+
             if (!UserExists(id)) { return NotFound(new { message = "User not found." }); }
 
             var user = await _context.users.FindAsync(id);
