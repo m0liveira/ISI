@@ -18,7 +18,7 @@ namespace futFind.Services
             _configuration = configuration;
         }
 
-        public string GenerateToken(string password, string email)
+        public string GenerateToken(string id, string email)
         {
             var jwtKey = _configuration["Jwt:Key"];
             var jwtIssuer = _configuration["Jwt:Issuer"];
@@ -30,8 +30,8 @@ namespace futFind.Services
 
             var claims = new[]
             {
+                new Claim(JwtRegisteredClaimNames.Sub, id),
                 new Claim(JwtRegisteredClaimNames.Email, email),
-                new Claim(JwtRegisteredClaimNames.Sub, password),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

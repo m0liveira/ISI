@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using futFind.Services;
+using futFind.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace futFind.Controllers
 {
@@ -8,25 +10,33 @@ namespace futFind.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AuthService _AuthService;
+        private readonly AppDbContext _context;
 
-        public AuthController(AuthService authService)
+        public AuthController(AuthService authService, AppDbContext context)
         {
             _AuthService = authService;
+            _context = context;
+
         }
+
+
 
         [HttpPost]
-        public IActionResult Authenticate([FromBody] LoginRequest login)
+        public async Task<IActionResult> Authenticate([FromBody] LoginRequest login)
         {
+            var user = await _context.users.FirstOrDefaultAsync(res => res.email == login.Email);
 
-            var token = _AuthService.GenerateToken(login.Password, login.Email);
+            if (user == null || user.password != login.Password) { return Unauthorized(new { message = "Invalid email or password" }); }
 
-            if (token == null) { return Unauthorized(new { message = "Invalid username or password" }); }
+            var token = _AuthService.GenerateToken(user.id.ToString(), user.email);
 
-            return Ok(new { token });
+            var response = new { token, data = user };
+
+            return Ok(response);
         }
     }
-}
 
+}
 public class LoginRequest
 {
     public required string Email { get; set; }
