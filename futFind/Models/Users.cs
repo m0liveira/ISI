@@ -6,6 +6,8 @@ namespace futFind.Models
     [Table("users")]
     public class Users
     {
+        internal int Id;
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }

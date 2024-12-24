@@ -2,8 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
 using Microsoft.AspNetCore.Authorization;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+using futFind.Swagger.Shared;
 
 namespace futFind.Controllers
 {
@@ -25,28 +26,56 @@ namespace futFind.Controllers
 
         private bool PhoneExists(string phone) { return _context.users.Any(res => res.phone == phone); }
 
-        // GET: /api/Users
-        [HttpGet]
+        /// <summary> Retrieves a list of all users. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Users>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [SwaggerOperation(
+            Summary = "Get all users",
+            Description = "Fetches a list of all users. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [HttpGet]   // GET: /api/Users
         public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
         {
-            if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
+            if (!Request.Headers.TryGetValue("Authorization", out var token))
+            {
+                return BadRequest(new { message = "Authorization header is missing." });
+            }
 
             return Ok(await _context.users.ToListAsync());
         }
 
-        // GET: /api/Users/{id}
-        [HttpGet("{id}")]
+        /// <summary> Retrieves a specific user by using its id. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Users))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a user by ID",
+            Description = "Fetches a user data. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("{id}")]   // GET: /api/Users/{id}
         public async Task<ActionResult<IEnumerable<Users>>> GetUser(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
 
-            if (!UserExists(id)) { return BadRequest(NotFound()); }
+            if (!UserExists(id)) { return NotFound(new { status = 404 }); }
 
             return Ok(await _context.users.FindAsync(id));
         }
 
-        // POST: /api/Users
-        [HttpPost]
+        /// <summary> Creates a user. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Users))]
+        [SwaggerOperation(
+            Summary = "Create a new user",
+            Description = "Creates a user and add to the database. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [HttpPost]  // POST: /api/Users
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Users>>> CreateUser(Users user)
         {
@@ -60,13 +89,24 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.id }, user);
         }
 
-        // PUT: /api/Users/{id}
-        [HttpPut("{id}")]
+        /// <summary> Updates a specific user by using its id. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Users))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Updates a user by ID",
+            Description = "Updates a user data. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPut("{id}")]   // PUT: /api/Users/{id}
         public async Task<ActionResult<IEnumerable<Users>>> UpdateUser(int id, Users user)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
 
-            if (!UserExists(id)) { return NotFound(new { message = "User not found." }); }
+            if (!UserExists(id)) { return NotFound(new { status = 404 }); }
 
             if (EmailExists(user.email)) { return Conflict(new { message = "Email is already in use." }); }
 
@@ -74,7 +114,7 @@ namespace futFind.Controllers
 
             var existingUser = await _context.users.FindAsync(id);
 
-            if (existingUser == null) { return NotFound(new { message = "User not found." }); }
+            if (existingUser == null) { return NotFound(new { status = 404 }); }
 
             existingUser.name = user.name;
             existingUser.email = user.email;
@@ -89,16 +129,27 @@ namespace futFind.Controllers
         }
 
 
-        // DELETE: api/User/{id}
-        [HttpDelete("{id}")]
+        /// <summary> Deletes a specific user by using its id. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Users))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Deletes a user by ID",
+            Description = "Deletes a user data from the databasse. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpDelete("{id}")]    // DELETE: api/User/{id}
         public async Task<ActionResult<IEnumerable<Users>>> DeleteUser(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
 
-            if (!UserExists(id)) { return NotFound(new { message = "User not found." }); }
+            if (!UserExists(id)) { return NotFound(new { status = 404 }); }
 
             var user = await _context.users.FindAsync(id);
-            if (user == null) { return NotFound(new { message = "User not found." }); }
+            if (user == null) { return NotFound(new { status = 404 }); }
 
             _context.users.Remove(user);
             await _context.SaveChangesAsync();

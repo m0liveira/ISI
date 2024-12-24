@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futfind\\futFind.csproj": {}
+    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futfind\\futFind.csproj": {
+    "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futfind\\futFind.csproj",
+        "projectUniqueName": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
         "projectName": "futFind",
-        "projectPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futfind\\futFind.csproj",
+        "projectPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\futFind.csproj",
         "packagesPath": "C:\\Users\\Mateus Oliveira\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futfind\\obj\\",
+        "outputPath": "C:\\Users\\Mateus Oliveira\\Desktop\\ISI\\futFind\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -76,6 +76,14 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[7.2.0, )"
+            },
+            "Swashbuckle.AspNetCore.Annotations": {
+              "target": "Package",
+              "version": "[7.2.0, )"
+            },
+            "Swashbuckle.AspNetCore.Filters": {
+              "target": "Package",
+              "version": "[8.0.2, )"
             },
             "System.IdentityModel.Tokens.Jwt": {
               "target": "Package",

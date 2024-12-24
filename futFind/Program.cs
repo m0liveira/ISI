@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using futFind.Services;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +21,36 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "futFind API",
         Version = "v1",
-        Description = "API para gerenciar jogos e usuários no futFind."
+        Description = "API para gerir jogos e utilizadores no futFind."
     });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Please enter the Bearer token"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+    c.EnableAnnotations();
+    c.ExampleFilters();
 });
+
+builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
@@ -74,6 +102,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "futFind API v1"); });
 }
 
+
+
+app.MapSwagger().RequireAuthorization();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

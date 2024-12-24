@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
 using Microsoft.AspNetCore.Authorization;
+using futFind.Swagger.Shared;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace futFind.Controllers
 {
@@ -24,8 +27,17 @@ namespace futFind.Controllers
 
         private bool NotificationExists(int id) { return _context.notifications.Any(n => n.id == id); }
 
-        // GET: /api/Notifications
-        [HttpGet]
+        /// <summary> Retrieves all notifications. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notifications>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [SwaggerOperation(
+            Summary = "Get a list of notifications",
+            Description = "Fetches a list of notifications. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [HttpGet]   // GET: /api/Notifications
         public async Task<ActionResult<IEnumerable<Notifications>>> GetNotifications()
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -33,8 +45,19 @@ namespace futFind.Controllers
             return Ok(await _context.notifications.ToListAsync());
         }
 
-        // GET: /api/Notifications/{id}
-        [HttpGet("{id}")]
+        /// <summary> Retrieves a specific game notification. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notifications))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a notification",
+            Description = "Fetches a notification. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("{id}")]   // GET: /api/Notifications/{id}
         public async Task<ActionResult<Notifications>> GetNotification(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -44,8 +67,19 @@ namespace futFind.Controllers
             return Ok(await _context.notifications.FindAsync(id));
         }
 
-        // GET: /api/Notifications/Game/{game_id}
-        [HttpGet("Game/{game_id}")]
+        /// <summary> Retrieves a specific game notifications. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Notifications>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a game notifications",
+            Description = "Fetches a game notifications. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("Game/{game_id}")] // GET: /api/Notifications/Game/{game_id}
         public async Task<ActionResult<IEnumerable<Notifications>>> GetNotificationsByGame(int game_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -60,8 +94,19 @@ namespace futFind.Controllers
             return Ok(notifications);
         }
 
-        // POST: /api/Notifications
-        [HttpPost]
+        /// <summary> Create a notification. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notifications))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Create a notifications",
+            Description = "Creates a game notification. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPost]  // POST: /api/Notifications
         public async Task<ActionResult<Notifications>> CreateNotification(Notifications notification)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -72,8 +117,19 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetNotification), new { id = notification.id }, notification);
         }
 
-        // PUT: /api/Notifications/{id}
-        [HttpPut("{id}")]
+        /// <summary> Updates a specific game notifications. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notifications))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Update a game notifications",
+            Description = "Updates a game notifications. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPut("{id}")]   // PUT: /api/Notifications/{id}
         public async Task<ActionResult<Notifications>> UpdateNotification(int id, Notifications notification)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -96,8 +152,19 @@ namespace futFind.Controllers
             return Ok(existingNotification);
         }
 
-        // DELETE: /api/Notifications/{id}
-        [HttpDelete("{id}")]
+        /// <summary> Deletes a specific game notifications. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Notifications))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Delete a game notifications",
+            Description = "Deletes a game notifications. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpDelete("{id}")]    // DELETE: /api/Notifications/{id}
         public async Task<ActionResult> DeleteNotification(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }

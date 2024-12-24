@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
 using Microsoft.AspNetCore.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
+using futFind.Swagger.Shared;
 
 namespace futFind.Controllers
 {
@@ -27,8 +29,17 @@ namespace futFind.Controllers
             return _context.players.Any(p => p.user_id == userId && p.match_id == matchId);
         }
 
-        // GET: /api/Players
-        [HttpGet]
+        /// <summary> Retrieves all players. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Players>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [SwaggerOperation(
+            Summary = "Get a list of players",
+            Description = "Fetches a list of teams. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [HttpGet]   // GET: /api/Players
         public async Task<ActionResult<IEnumerable<Players>>> GetPlayers()
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -36,6 +47,18 @@ namespace futFind.Controllers
             return Ok(await _context.players.ToListAsync());
         }
 
+        /// <summary> Retrieves a specific players of a game. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Players))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a player of a game",
+            Description = "Fetches a user data that is in a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
         [HttpGet("{userId}/{matchId}")]
         public async Task<ActionResult<Players>> GetPlayer(int userId, int matchId)
         {
@@ -46,8 +69,19 @@ namespace futFind.Controllers
             return Ok(await _context.players.FirstOrDefaultAsync(p => p.user_id == userId && p.match_id == matchId));
         }
 
-        // GET: /api/Players/Game/{game_id}
-        [HttpGet("Game/{game_id}")]
+        /// <summary> Retrieves all players of a game. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Players>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get game players",
+            Description = "Fetches all players of a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("Game/{game_id}")]    // GET: /api/Players/Game/{game_id}
         public async Task<ActionResult<IEnumerable<Users>>> GetGamePlayers(int game_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -62,8 +96,19 @@ namespace futFind.Controllers
             return Ok(players);
         }
 
-        // GET: /api/Players/{user_id}/Games
-        [HttpGet("{user_id}/Games")]
+        /// <summary> Retrieves all games of a specific player. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Games>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a player games",
+            Description = "Fetches all games of a user. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("{user_id}/Games")]    // GET: /api/Players/{user_id}/Games
         public async Task<ActionResult<IEnumerable<Users>>> GetPlayerGames(int user_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -78,8 +123,19 @@ namespace futFind.Controllers
             return Ok(games);
         }
 
-        // POST: /api/Players
-        [HttpPost]
+        /// <summary> Add players to games. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Players))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Add players to games",
+            Description = "Adds a player to a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPost]  // POST: /api/Players
         public async Task<ActionResult<Players>> AddPlayer(Players player)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -105,18 +161,28 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetPlayer), new { userId = newPlayer.user_id, matchId = newPlayer.match_id }, newPlayer);
         }
 
-        // DELETE: /api/Players/{userId}/{matchId}
-        [HttpDelete("{userId}/{matchId}")]
+        /// <summary> Remove players of games. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Players))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Remove players of games",
+            Description = "Removes a player of a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpDelete("{userId}/{matchId}")]  // DELETE: /api/Players/{userId}/{matchId}
         public async Task<ActionResult> RemovePlayer(int userId, int matchId)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
 
-            if (!PlayerExists(userId, matchId)) { return NotFound(new { message = "Player not found." }); }
+            if (!PlayerExists(userId, matchId)) { return NotFound(new { status = 404 }); }
 
-            var player = await _context.players
-                .FirstOrDefaultAsync(p => p.user_id == userId && p.match_id == matchId);
+            var player = await _context.players.FirstOrDefaultAsync(p => p.user_id == userId && p.match_id == matchId);
 
-            if (player == null) { return NotFound(new { message = "Player not found." }); }
+            if (player == null) { return NotFound(new { status = 404 }); }
 
             _context.players.Remove(player);
             await _context.SaveChangesAsync();

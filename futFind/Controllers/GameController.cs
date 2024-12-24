@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
+using futFind.Swagger.Shared;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace futFind.Controllers
 {
@@ -23,17 +26,37 @@ namespace futFind.Controllers
 
         private bool GameExists(int id) { return _context.games.Any(g => g.id == id); }
 
-        // GET: /api/Games
-        [HttpGet]
+        /// <summary> Retrieves all games. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Games>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [SwaggerOperation(
+            Summary = "Get all games",
+            Description = "Fetches all games. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [HttpGet]   // GET: /api/Games
         public async Task<ActionResult<IEnumerable<Games>>> GetGames()
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
-            
+
             return Ok(await _context.games.ToListAsync());
         }
 
-        // GET: /api/Games/{id}
-        [HttpGet("{id}")]
+        /// <summary> Retrieves a game. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Games))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a game",
+            Description = "Fetches a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("{id}")]   // GET: /api/Games/{id}
         public async Task<ActionResult<Games>> GetGame(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -43,8 +66,19 @@ namespace futFind.Controllers
             return Ok(await _context.games.FindAsync(id));
         }
 
-        // GET: /api/Games/{share_code}
-        [HttpGet("/Code/{share_code}")]
+        /// <summary> Retrieves a game by share code. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Games))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a game by share code",
+            Description = "Fetches a game by share code. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("/Code/{share_code}")]     // GET: /api/Games/{share_code}
         public async Task<ActionResult<Games>> GetGamebyCode(string share_code)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -56,8 +90,17 @@ namespace futFind.Controllers
             return Ok(game);
         }
 
-        // POST: /api/Games
-        [HttpPost]
+        /// <summary> Creates a games. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Games))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [SwaggerOperation(
+            Summary = "Create a game",
+            Description = "Creates a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [HttpPost]  // POST: /api/Games
         public async Task<ActionResult<Games>> CreateGame(Games game)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -68,8 +111,19 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetGame), new { id = game.id }, game);
         }
 
-        // PUT: /api/Games/{id}
-        [HttpPut("{id}")]
+        /// <summary> Updates a game. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Games))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Update a game",
+            Description = "Updates a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPut("{id}")]   // PUT: /api/Games/{id}
         public async Task<ActionResult<Games>> UpdateGame(int id, Games game)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -96,8 +150,19 @@ namespace futFind.Controllers
             return Ok(existingGame);
         }
 
-        // DELETE: /api/Games/{id}
-        [HttpDelete("{id}")]
+        /// <summary> Deletes a game. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Games))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Delete a game",
+            Description = "Deletes a game. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpDelete("{id}")]    // DELETE: /api/Games/{id}
         public async Task<ActionResult<Games>> DeleteGame(int id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }

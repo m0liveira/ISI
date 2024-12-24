@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using futFind.Models;
 using Microsoft.AspNetCore.Authorization;
+using futFind.Swagger.Shared;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace futFind.Controllers
 {
@@ -21,8 +24,19 @@ namespace futFind.Controllers
             _context = context;
         }
 
-        // GET: /api/Member/{user_id}/{clan_id} (helper method for CreatedAtAction)
-        [HttpGet("{user_id}/{clan_id}")]
+        /// <summary> Retrieves a clan member. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Members))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a clan member",
+            Description = "Fetches a clan member. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("{user_id}/{clan_id}")]    // GET: /api/Member/{user_id}/{clan_id} (helper method for CreatedAtAction)
         public async Task<ActionResult<Members>> GetClanMember(int user_id, int clan_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -34,8 +48,19 @@ namespace futFind.Controllers
             return Ok(clanMember);
         }
 
-        // GET: /api/Member/clan/{clan_id}
-        [HttpGet("clan/{clan_id}")]
+        /// <summary> Retrieves all clan members. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Members>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get all clan members",
+            Description = "Fetches all clan members. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("clan/{clan_id}")]     // GET: /api/Member/clan/{clan_id}
         public async Task<ActionResult<IEnumerable<Users>>> GetMembersOfClan(int clan_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -50,8 +75,19 @@ namespace futFind.Controllers
             return Ok(members);
         }
 
-        // GET: /api/Member/user/{user_id}
-        [HttpGet("user/{user_id}")]
+        /// <summary> Retrieves a user clan. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Teams>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Get a user clan",
+            Description = "Fetches a user clan. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpGet("user/{user_id}")] // GET: /api/Member/user/{user_id}
         public async Task<ActionResult<IEnumerable<Users>>> GetUserClan(int user_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -66,8 +102,19 @@ namespace futFind.Controllers
             return Ok(clans);
         }
 
-        // POST: /api/Member
-        [HttpPost]
+        /// <summary> Adds a clan member. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Members))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Add a clan member",
+            Description = "Adds a clan member. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpPost]  // POST: /api/Member
         public async Task<IActionResult> AddMemberToClan(Members member)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -93,8 +140,19 @@ namespace futFind.Controllers
             return CreatedAtAction(nameof(GetClanMember), new { user_id = newMember.user_id, clan_id = newMember.clan_id }, newMember);
         }
 
-        // DELETE: /api/Member/{clan_id}/{user_id}
-        [HttpDelete("{clan_id}/{user_id}")]
+        /// <summary> Removes a clan member. </summary>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Members))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(AuthorizationTokenMissingExample))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(UnauthorizedExample))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(NotFoundExample))]
+        [SwaggerOperation(
+            Summary = "Remove a clan member",
+            Description = "Removes a clan member. Requires the `Authorization` header to be set with a valid token."
+        )]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
+        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
+        [HttpDelete("{clan_id}/{user_id}")]     // DELETE: /api/Member/{clan_id}/{user_id}
         public async Task<IActionResult> RemoveUserFromClan(int clan_id, int user_id)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
@@ -106,7 +164,6 @@ namespace futFind.Controllers
             _context.members.Remove(clanMember);
             await _context.SaveChangesAsync();
 
-            // Return a success response
             return Ok(new { message = "User successfully removed from the clan." });
         }
 
