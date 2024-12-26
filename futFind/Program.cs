@@ -6,6 +6,10 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using futFind.Services;
 using Swashbuckle.AspNetCore.Filters;
+using System.ServiceModel;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using SoapCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +97,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 builder.Services.AddAuthorization();
 
+// Adicionar serviços ao container
+builder.Services.AddSoapCore();
+builder.Services.AddSingleton<ISoapService, SoapService>();
+
 var app = builder.Build();
 
 // Configure o pipeline de requisições
@@ -102,11 +110,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "futFind API v1"); });
 }
 
-
-
 app.MapSwagger().RequireAuthorization();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseSoapEndpoint<ISoapService>("/SoapService.svc", new BasicHttpBinding());
 app.Run();
