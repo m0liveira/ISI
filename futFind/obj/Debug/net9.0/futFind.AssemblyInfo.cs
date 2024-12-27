@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("futFind")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4aa7aec2bf3f873fa6d86648f9025937fb19567")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6b2b22e717a6e49766939c3f39c3b45a4891f9e3")]
 [assembly: System.Reflection.AssemblyProductAttribute("futFind")]
 [assembly: System.Reflection.AssemblyTitleAttribute("futFind")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
