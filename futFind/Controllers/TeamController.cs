@@ -168,6 +168,5 @@ namespace futFind.Controllers
 
             return Ok(existingTeam);
         }
-
     }
 }

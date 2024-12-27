@@ -78,7 +78,7 @@ namespace futFind.Controllers
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(AuthorizationTokenMissingExample))]
         [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(UnauthorizedExample))]
         [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(NotFoundExample))]
-        [HttpGet("/Code/{share_code}")]     // GET: /api/Games/{share_code}
+        [HttpGet("Code/{share_code}")]     // GET: /api/Games/{share_code}
         public async Task<ActionResult<Games>> GetGamebyCode(string share_code)
         {
             if (!Request.Headers.TryGetValue("Authorization", out var token)) { return BadRequest(new { message = "Authorization header is missing." }); }
