@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.Filters;
 using System.ServiceModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using SoapCore;
+// using SoapCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,8 +98,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 builder.Services.AddAuthorization();
 
 // Adicionar serviços ao container
-builder.Services.AddSoapCore();
-builder.Services.AddSingleton<ISoapService, SoapService>();
+// builder.Services.AddSoapCore();
+// builder.Services.AddSingleton<ISoapService, SoapService>();
 
 var app = builder.Build();
 
@@ -115,5 +115,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseSoapEndpoint<ISoapService>("/SoapService.svc", new BasicHttpBinding());
+// app.UseSoapEndpoint<ISoapService>("/SoapService.svc", new BasicHttpBinding());
 app.Run();
+
+public partial class Program { }
